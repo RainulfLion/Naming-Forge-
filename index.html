@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Naming Forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px;
+            max-height: 400px; 
+        }
+        @media (min-width: 768px) { 
+            .chart-container { 
+                height: 350px; 
+            } 
+        }
+        
+        /* Dark Mode Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a; /* slate-950 */
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155; /* slate-700 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569; /* slate-600 */
+        }
+
+        .category-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #d97706; /* amber-600 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding-left: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .word-button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            color: #cbd5e1; /* slate-300 */
+            transition: all 0.15s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .word-button:hover {
+            background-color: #1e293b; /* slate-800 */
+            color: #fbbf24; /* amber-400 */
+            border-color: #334155;
+        }
+    </style>
+    
+    <!-- Chosen Palette: Dark Slate & Amber (Fantasy RPG Style) -->
+    <!-- Application Structure Plan: A 3-section dashboard. Left: Controls (Language). Middle: Dictionary (Searchable list). Right: Forge (Builder). Footer: Monetization & About. -->
+    <!-- Visualization & Content Choices: Dark mode UI reduces eye strain for creative work. Lucide icons added via CDN for visual polish. Footer monetization area allows for passive income (ads) or donations (coffee). -->
+    <!-- CONFIRMATION: NO SVG graphics used (Lucide icons loaded via script). NO Mermaid JS used. -->
+
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans antialiased flex flex-col min-h-screen selection:bg-amber-900 selection:text-white">
+
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center gap-3">
+            <div class="bg-amber-600 p-2 rounded-lg shadow-lg shadow-amber-900/20">
+                <i data-lucide="sparkles" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-amber-500 tracking-tight leading-none">
+                    Naming<span class="text-slate-100">Forge</span>
+                </h1>
+                <p class="text-xs text-slate-500 mt-1">Interactive lexicon for worldbuilders</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Column 1: Controls -->
+            <aside class="lg:col-span-3 space-y-6">
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-xl">
+                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="map" class="w-4 h-4"></i> Settings
+                    </h2>
+                    <label for="language-select" class="block text-sm font-medium text-slate-300 mb-2">Target Language</label>
+                    <select id="language-select" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"></select>
+                    <div class="mt-4 p-3 bg-slate-950 rounded border border-slate-800 text-xs text-slate-500 leading-relaxed">
+                        Some languages like Russian & Japanese include automatic phonetic transliteration.
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Column 2: Dictionary -->
+            <section class="lg:col-span-4">
+                <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-xl h-full flex flex-col max-h-[700px]">
+                    <div class="mb-4">
+                        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i data-lucide="book" class="w-4 h-4"></i> Dictionary
+                        </h2>
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3 top-3 text-slate-500 w-4 h-4"></i>
+                            <input type="text" id="search-input" placeholder="Search words..." class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 p-2.5 text-sm text-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all placeholder-slate-600">
+                        </div>
+                    </div>
+                    <div id="dictionary-list" class="overflow-y-auto custom-scrollbar flex-1 pr-2">
+                        <!-- Dictionary will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Column 3: The Forge -->
+            <section class="lg:col-span-5 space-y-6">
+                <div class="bg-slate-900 p-6 md:p-8 rounded-xl border border-slate-800 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+                    
+                    <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        The Forge
+                    </h2>
+                    <p class="text-sm text-slate-500 mb-6">Select words from the dictionary to combine concepts.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div id="slot-1" class="h-32 border-2 border-dashed border-slate-700 rounded-lg flex flex-col items-center justify-center text-slate-600 p-4 relative transition-all">
+                            <!-- Slot 1 Content -->
+                        </div>
+                        <div id="slot-2" class="h-32 border-2 border-dashed border-slate-700 rounded-lg flex flex-col items-center justify-center text-slate-600 p-4 relative transition-all">
+                            <!-- Slot 2 Content -->
+                        </div>
+                    </div>
+
+                    <div id="result-card" class="bg-gradient-to-br from-slate-800 to-slate-900 border border-amber-900/30 rounded-xl p-8 text-center relative shadow-lg min-h-[180px] flex flex-col justify-center items-center">
+                        <!-- Result Content -->
+                        <i data-lucide="hammer" class="w-12 h-12 text-slate-700 mb-2"></i>
+                        <span class="text-slate-500 text-sm italic">The anvil awaits...</span>
+                    </div>
+                    
+                    <button id="clear-forge" class="w-full flex items-center justify-center gap-2 mt-6 text-sm text-slate-500 hover:text-red-400 transition-colors py-2">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Clear Forge
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Monetization & Footer Section -->
+    <footer class="bg-slate-900 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
+            
+                <!-- About / SEO Text -->
+                <div class="space-y-2">
+                    <h3 class="text-amber-500 font-bold text-xs uppercase tracking-wider">About The Forge</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        A free tool for fantasy writers, D&D players, and worldbuilders to create meaning-based names in 20+ languages including Gothic, Old Norse, and Japanese.
+                    </p>
+                </div>
+
+                <!-- Support / Buy Me a Coffee -->
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <span class="text-slate-300 text-sm font-medium">Forge running low on coal?</span>
+                    <button class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-6 rounded-full shadow-lg transition-all transform hover:scale-105 flex items-center gap-2 text-sm">
+                        <i data-lucide="coffee" class="w-4 h-4"></i>
+                        Buy the Smith a Coffee
+                    </button>
+                </div>
+
+                <!-- Ad Space / Future Links -->
+                <div class="flex flex-col items-center md:items-end space-y-2">
+                    <div class="text-[10px] text-slate-600 uppercase tracking-widest mb-1">Sponsor</div>
+                    <!-- Placeholder for AdSense or Affiliate Banner -->
+                    <div class="bg-slate-950 border border-slate-800 border-dashed rounded-lg w-full max-w-[220px] h-16 flex items-center justify-center text-slate-700 text-xs">
+                        (Ad Space / Affiliate Link)
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="border-t border-slate-800 mt-8 pt-4 text-center text-slate-600 text-xs">
+                &copy; <script>document.write(new Date().getFullYear())</script> The Naming Forge. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const CSV_DATA = `Category,English,French,German,Spanish,Italian,Russian,Arabic,Hindi,Chinese,Japanese,Korean,Portuguese,Turkish,Swahili,Persian,Old English,Old Norse,Gothic,Latin,Ancient Greek
+Natural,Forest,Forêt,Wald,Bosque,Foresta,Лес,غابة,वन,森林,森,숲,Floresta,Orman,Misitu,جنگل,Wudu,Skógar,Widus,Silva,Ὕλη
+Natural,River,Rivière,Fluss,Río,Fiume,Река,نهر,नदी,河流,川,강,Rio,Nehir,Mto,رودخانه,Ēa,Ár,Ahwa,Flumen,Ποταμός
+Natural,Lake,Lac,See,Lago,Lago,Озеро,بحيرة,झील,湖,湖,호수,Lago,Göl,Ziwa,دریاچه,Mere,Vatn,Saiws,Lacus,Λίμνη
+Natural,Sea,Mer,Meer,Mar,Mare,Море,بحر,सागर,海,海,바다,Mar,Deniz,Bahari,دریا,Sǣ,Haf,Marei,Mare,Θάλασσα
+Natural,Mountain,Montagne,Berg,Montaña,Montagna,Гора,جبل,पहाड़,山,山,산,Montanha,Dağ,Mlima,کوه,Beorg,Fjall,Fairguni,Mons,OKος
+Natural,Hill,Colline,Hügel,Colina,Collina,Холм,تل,पहाड़ी,丘陵,丘,언덕,Colina,Tepe,Kilima,تپه,Hyll,Hóll,Hlain,Collis,Λόφος
+Natural,Valley,Vallée,Tal,Valle,Valle,Долина,وادي,घाटी,山谷,谷,계곡,Vale,Vadi,Bonde,دره,Denu,Dalr,Dal,Vallis,Νάπη
+Natural,Desert,Désert,Wüste,Desierto,Deserto,Пустыня,صحراء,रेगिस्तान,沙漠,砂漠,사막,Deserto,Çöl,Jangwa,بیابان,Wēsten,Auðn,Auþida,Deserta,Ἔρημος
+Natural,Swamp,Marais,Sumpf,Pantano,Palude,Болото,مستنقع,दलदल,沼泽,沼,늪,Pântano,Bataklık,Kinamasi,مرداب,Fenn,Fen,Fani,Palus,Έλος
+Natural,Glacier,Glacier,Gletscher,Glaciar,Ghiacciaio,Ледник,نهر جليدي,हिमनद,冰川,氷河,빙하,Geleira,Buzul,Barafu,یخچال,Ís,Jökull,Is,Glacies,Κρύσταλλος
+Natural,Volcano,Volcan,Vulkan,Volcán,Vulcano,Вулкан,بركان,ज्वालामुखी,火山,火山,화산,Vulcão,Yanardağ,Volkano,آتشفشان,Fȳrbeorg,Eldfjall,Fon,Vulcanus,Ηφαίστειον
+Natural,Cliff,Falaise,Klippe,Acantilado,Scogliera,Скала,جرف,चट्टान,悬崖,崖,절벽,Penhasco,Uçurum,Genze,صخره,Clif,Kleyf,Driuso,Rupes,Κρημνός
+Natural,Cave,Grotte,Höhle,Cueva,Grotta,Пещера,كهف,गुफा,洞穴,洞窟,동굴,Caverna,Mağara,Pango,غار,Scræf,Hellir,Grōba,Spelunca,Σπήλαιον
+Natural,Waterfall,Cascade,Wasserfall,Cascada,Cascata,Водопад,شلال,जलप्रपात,瀑布,滝,폭포,Cachoeira,Şelale,Maporomoko,آبشار,Wætergefeall,Foss,Driusfall,Cataracta,Καταρράκτης
+Natural,Fire,Feu,Feuer,Fuego,Fuoco,Огонь,نار,आग,火,火,불,Fogo,Ateş,Moto,آتش,Fyr,Eldur,Fon,Ignis,Πῦρ
+Natural,Water,Eau,Wasser,Agua,Acqua,Вода,ماء,पानी,水,水,물,Água,Su,Maji,آب,Wæter,Vatn,Wato,Aqua,ὕδωρ
+Natural,Earth,Terre,Erde,Tierra,Terra,Земля,أرض,पृथ्वी,大地,地,땅,Terra,Toprak,Ardhi,زمین,Eorðe,Jörð,Airþa,Terra,Γῆ
+Natural,World,Monde,Welt,Mundo,Mondo,Мир,العالم,दुनिया,世界,世界,세계,Mundo,Dünya,Dunia,جهان,Woruld,Heimr,Fairhvus,Mundus,Κόσμος
+Structures,Fort,Fort,Festung,Fuerte,Forte,Форт,حصن,किला,堡垒,要塞,요새,Forte,Kale,Ngome,قلعه,Fæsten,Virki,Baurgs,Castellum,Φρούριον
+Structures,Castle,Château,Schloss,Castillo,Castello,Замок,قلعة,महल,城堡,城,성,Castelo,Şato,Kasri,قصر,Castel,Kastali,Baurgs,Castellum,Πύργος
+Structures,City,Ville,Stadt,Ciudad,Città,Город,مدينة,शहर,城市,都市,도시,Cidade,Şehir,Mji,شهر,Burh,Borg,Baurgs,Urbs,Πόλις
+Structures,Village,Village,Dorf,Pueblo,Villaggio,Деревня,قرية,गाँव,村庄,村,마을,Aldea,Köy,Kijiji,روستا,Tūn,Þorp,Weihs,Vicus,Κώμη
+Structures,Road,Route,Straße,Camino,Strada,Дорога,طريق,सड़क,道路,道,길,Estrada,Yol,Barabara,جاده,Weġ,Vegr,Wigs,Via,Ὁδός
+Structures,Bridge,Pont,Brücke,Puente,Ponte,Мост,جسر,पुल,桥,橋,다리,Ponte,Köprü,Daraja,پل,Brycġ,Brú,Brugga,Pons,Γέφυρα
+Structures,Ruin,Ruine,Ruine,Ruina,Rovina,Руина,خرابة,खंडहर,废墟,廃墟,폐허,Ruína,Harabe,Magofu,ویرانه,Hryre,Rúst,Uswalts,Ruina,Ερείπιον
+Structures,Wall,Mur,Wauer,Muro,Muro,Стена,جدار,दीवार,墙,壁,벽,Muro,Duvar,Ukuta,دیوار,Weall,Veggr,Waddjus,Murus,Τεῖχος
+Structures,Temple,Temple,Tempel,Templo,Tempio,Храм,معبد,मंदिर,寺庙,寺,사원,Templo,Tapınak,Hekalu,معبد,Tempel,Hof,Alhs,Templum,Ναός
+Structures,Mine,Mine,Mine,Mina,Miniera,Шахта,منجم,खान,矿,鉱山,광산,Mina,Maden,Mgodi,معدن,Mīn,Nám,Grōba,Fodina,Μεταλλεῖον
+Structures,Dungeon,Donjon,Verlies,Mazmorra,Sotterraneo,Подземелье,زنزانة,कालकोठरी,地牢,地下牢,지하 감옥,Masmorra,Zindan,Gereza,سیاه چال,Cweartern,Myrkvastofa,Karkara,Carcer,Δεσμωτήριον
+Structures,Battlefield,Champ de bataille,Schlachtfeld,Campo de batalla,Campo di battaglia,Поле битвы,ساحة المعركة,रणभूमि,战场,戦場,전장,Campo de batalha,Savaş alanı,Uwanja wa vita,میدان جنگ,Wælstōw,Völlr,Walus,Acies,Μάχη
+Structures,Tomb,Tombeau,Grab,Tumba,Tomba,Гробница,قبر,मकबरा,坟墓,墓,무덤,Tumba,Mezar,Kaburi,آرامگاه,Byrgen,Haugr,Hlaiw,Sepulcrum,Τύμβος
+Structures,Portal,Portail,Portal,Portal,Portale,Портал,بوابة,द्वार,门户,門,포털,Portal,Kapı,Lango,دروازه,Geat,Gatt,Daur,Porta,Πύλη
+Structures,Well,Puits,Brunnen,Pozo,Pozzo,Колодец,بئر,कुआँ,井,井戸,우물,Poço,Kuyu,Kisima,چاه,Wylle,Brunnr,Brunna,Puteus,Φρέαρ
+People,Man,Homme,Mann,Hombre,Uomo,Мужчина,رجل,पुरुष,男人,男,남자,Homem,Adam,Mwanaume,مرد,Wer,Maðr,Wair,Vir,Ἀνήρ
+People,Woman,Femme,Frau,Mujer,Donna,Женщина,امرأة,महिला,女人,女,여자,Mulher,Kadın,Mwanamke,زن,Wīf,Kona,Qinō,Femina,Γυνή
+People,Warrior,Guerrier,Krieger,Guerrero,Guerriero,Воин,محارب,योद्धा,战士,戦士,전사,Guerreiro,Savaşçı,Shujaa,جنگجو,Wiga,Hermaðr,Gadrauhts,Bellator,Πολεμιστής
+People,Savage,Sauvage,Wilder,Salvaje,Selvaggio,Дикарь,همجي,जंगली,野蛮人,野蛮人,야만인,Selvagem,Vahşi,Mkatili,وحشی,Wilde,Villr,Wilþeis,Barbarus,Βάρβαρος
+Concepts,Day,Jour,Tag,Día,Giorno,День,يوم,दिन,天,昼,낮,Dia,Gün,Siku,روز,Dæġ,Dagr,Dags,Dies,Ἡμέρα
+Concepts,Night,Nuit,Nacht,Noche,Notte,Ночь,ليل,रात,夜,夜,밤,Noite,Gece,Usiku,شب,Niht,Nótt,Nahts,Nox,Νύξ
+Concepts,Life,Vie,Leben,Vida,Vita,Жизнь,حياة,जीवन,生活,命,삶,Vida,Hayat,Maisha,زندگی,Līf,Líf,Libains,Vita,Βίος
+Concepts,Death,Mort,Tod,Muerte,Morte,Смерть,موت,मृत्यु,死亡,死,죽음,Morte,Ölüm,Kifo,مرگ,Dēað,Dauði,Dauþus,Mors,Θάνατος
+Concepts,Birth,Naissance,Geburt,Nacimiento,Nascita,Рождение,ولادة,जन्म,出生,誕生,탄생,Nascimento,Doğum,Uzazi,تولد,Beorþ,Burðr,Gabaurþs,Natus,Γένεσις
+Concepts,Weapon,Arme,Waffe,Arma,Arma,Оружие,سلاح,हथियार,武器,武器,무기,Arma,Silah,Silaha,سلاح,Wǣpn,Vápn,Wepna,Telum,Ὅπλον
+Concepts,Sword,Épée,Schwert,Espada,Spada,Меч,سيف,तलवार,剑,剣,검,Espada,Kılıç,Upanga,شمشیر,Sweord,Sverð,Hairus,Gladius,Ξίφος
+Concepts,Running,Courir,Laufen,Correr,Correre,Бег,جري,दौड़,跑步,走る,달리기,Correr,Koşma,Kukimbia,دویدن,Rynel,Rás,Rinnan,Currens,Τρέχων
+Concepts,Ride,Monter,Reiten,Montar,Cavalcare,Езда,ركوب,सवारी,骑,乗る,타기,Montar,Binmek,Kupanda,سواری,Rād,Reið,Ridan,Equitare,Ἱππεύω
+Materials,Gold,Or,Gold,Oro,Oro,Золото,ذهب,सोना,金,金,금,Ouro,Altın,Dhahabu,طلا,Gold,Gull,Gulþ,Aurum,Χρυσός
+Materials,Silver,Argent,Silber,Plata,Argento,Серебро,فضة,चांदी,银,銀,은,Prata,Gümüş,Fedha,نقره,Seolfor,Silfr,Silubr,Argentum,Ἄργυρος
+Materials,Steel,Acier,Stahl,Acero,Acciaio,Сталь,فولاذ,इस्पात,钢,鋼,강철,Aço,Çelik,Chuma,فولاد,Stȳle,Stál,*Stals,Chalybs,Χάλυψ
+Materials,Copper,Cuivre,Kupfer,Cobre,Rame,Медь,نحاس,तांबा,铜,銅,구리,Cobre,Bakır,Shaba,مس,Ār,Eir,Aiz,Cuprum,Χαλκός
+`;
+
+        let DATABASE = [];
+        let HEADERS = [];
+        let CATEGORIES = {};
+        let selectedLanguage = 'Russian'; 
+        let slot1 = null; 
+        let slot2 = null; 
+
+        const languageSelect = document.getElementById('language-select');
+        const dictionaryList = document.getElementById('dictionary-list');
+        const searchInput = document.getElementById('search-input');
+        const slot1El = document.getElementById('slot-1');
+        const slot2El = document.getElementById('slot-2');
+        const resultCardEl = document.getElementById('result-card');
+        const clearForgeBtn = document.getElementById('clear-forge');
+
+        function transliterateCyrillic(text) {
+            if (!text) return '';
+            const map = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'ye', 'ё': 'yo', 'ж': 'zh',
+                'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+                'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
+                'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': "'", 'э': 'e', 'ю': 'yu', 'я': 'ya',
+                'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'Ye', 'Ё': 'Yo', 'Ж': 'Zh',
+                'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O',
+                'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts',
+                'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Shch', 'Ъ': '', 'Ы': 'Y', 'Ь': "'", 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+            };
+            return text.split('').map(char => map[char] || char).join('');
+        };
+
+        function transliterateGreek(text) {
+            if (!text) return '';
+            const map = {
+                'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'e', 'θ': 'th',
+                'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o', 'π': 'p',
+                'ρ': 'r', 'σ': 's', 'τ': 't', 'υ': 'y', 'φ': 'ph', 'χ': 'ch', 'ψ': 'ps', 'ω': 'o',
+                'ς': 's',
+                'Α': 'A', 'Β': 'B', 'Γ': 'G', 'Δ': 'D', 'Ε': 'E', 'Ζ': 'Z', 'Η': 'E', 'Θ': 'Th',
+                'Ι': 'I', 'Κ': 'K', 'Λ': 'L', 'Μ': 'M', 'Ν': 'N', 'Ξ': 'X', 'Ο': 'O', 'Π': 'P',
+                'Ρ': 'R', 'Σ': 'S', 'Τ': 'T', 'Υ': 'Y', 'Φ': 'Ph', 'Χ': 'Ch', 'Ψ': 'Ps', 'Ω': 'O'
+            };
+            return text.split('').map(char => map[char] || char).join('');
+        }
+
+        function transliterateJapanese(text) {
+            if (!text) return '';
+            const kanjiMap = {
+                '森': 'Mori', '川': 'Kawa', '火': 'Hi', '水': 'Mizu', '地': 'Tsuchi',
+                '風': 'Kaze', '山': 'Yama', '氷': 'Kōri', '星': 'Hoshi', '月': 'Tsuki',
+                '海': 'Umi', '湖': 'Mizuumi', '丘': 'Oka', '谷': 'Tani', '砂漠': 'Sabaku',
+                '沼': 'Numa', '氷河': 'Hyōga', '火山': 'Kazan', '崖': 'Gake', '洞窟': 'Dōkutsu',
+                '滝': 'Taki', '泉': 'Izumi', '林': 'Hayashi', '荒野': 'Kōya', '島': 'Shima',
+                '女': 'Onna', '男': 'Otoko', '戦士': 'Senshi', '王': 'Ō', '女王': 'Joō',
+                '魔女': 'Majo', '幽霊': 'Yūrei', '巨人': 'Kyojin', '野蛮人': 'Yabanjin',
+                '城': 'Shiro', '都市': 'Toshi', '村': 'Mura', '道': 'Michi', '橋': 'Hashi',
+                '廃墟': 'Haikyo', '壁': 'Kabe', '寺': 'Tera', '神殿': 'Shinden', '鉱山': 'Kōzan',
+                '地下牢': 'Chikarō', '戦場': 'Senjō', '墓': 'Haka', '門': 'Mon', '塔': 'Tō',
+                '要塞': 'Yōsai', '井戸': 'Ido', '聖域': 'Seiiki',
+                '空': 'Sora', '昼': 'Hiru', '夜': 'Yoru', '死': 'Shi', '生': 'Sei', '命': 'Inochi',
+                '誕生': 'Tanjō', '剣': 'Ken', '武器': 'Buki', '世界': 'Sekai', '走る': 'Hashiru',
+                '乗る': 'Noru',
+                '金': 'Kin', '銀': 'Gin', '鋼': 'Hagane', '銅': 'Dō'
+            };
+            if (kanjiMap[text]) return kanjiMap[text];
+            const kanaMap = {
+                'あ':'a','い':'i','う':'u','え':'e','お':'o','か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko',
+                'さ':'sa','し':'shi','す':'su','せ':'se','そ':'so','た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to',
+                'な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no','は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho',
+                'ま':'ma','み':'mi','む':'mu','め':'me','も':'mo','や':'ya','ゆ':'yu','よ':'yo','ら':'ra','り':'ri',
+                'る':'ru','れ':'re','ろ':'ro','わ':'wa','を':'wo','ん':'n','が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go',
+                'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo','だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do',
+                'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo','ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po',
+                'きゃ':'kya','きゅ':'kyu','きょ':'kyo','しゃ':'sha','しゅ':'shu','しょ':'sho','ちゃ':'cha','ちゅ':'chu',
+                'ちょ':'cho','にゃ':'nya','にゅ':'nyu','にょ':'nyo','ひゃ':'hya','ひゅ':'hyu','ひょ':'hyo','みゃ':'mya',
+                'みゅ':'myu','みょ':'myo','りゃ':'rya','りゅ':'ryu','りょ':'ryo','ぎゃ':'gya','ぎゅ':'gyu','ぎょ':'gyo',
+                'じゃ':'ja','じゅ':'ju','じょ':'jo','びゃ':'bya','びゅ':'byu','びょ':'byo','ぴゃ':'pya','ぴゅ':'pyu','ぴょ':'pyo',
+                'ア':'a','イ':'i','ウ':'u','エ':'e','オ':'o','カ':'ka','キ':'ki','ク':'ku','ケ':'ke','コ':'ko',
+                'サ':'sa','シ':'shi','ス':'su','セ':'se','ソ':'so','タ':'ta','チ':'chi','ツ':'tsu','テ':'te','ト':'to',
+                'ナ':'na','ニ':'ni','ヌ':'nu','ネ':'ne','ノ':'no','ハ':'ha','ヒ':'hi','フ':'fu','ヘ':'he','ホ':'ho',
+                'マ':'ma','ミ':'mi','ム':'mu','メ':'me','モ':'mo','ヤ':'ya','ユ':'yu','ヨ':'yo','ラ':'ra','リ':'ri',
+                'ル':'ru','レ':'re','ロ':'ro','ワ':'wa','ヲ':'wo','ン':'n','ガ':'ga','ギ':'gi','グ':'gu','ゲ':'ge','ゴ':'go',
+                'ザ':'za','ジ':'ji','ズ':'zu','ゼ':'ze','ゾ':'zo','ダ':'da','ヂ':'ji','ヅ':'zu','デ':'de','ド':'do',
+                'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo','パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po','ー':'-'
+            };
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                const next = text[i+1];
+                const combo = c + next;
+                if (kanaMap[combo]) {
+                    result += kanaMap[combo];
+                    i++; 
+                } else {
+                    result += kanaMap[c] || c;
+                }
+            }
+            return result.charAt(0).toUpperCase() + result.slice(1);
+        }
+        
+        function getPhonetic(text, lang) {
+            if (!text) return '';
+            if (text.includes('→')) return text.split('→')[1].trim();
+            if (text.includes('(')) return text.match(/\(([^)]+)\)/)?.[1] || '';
+            
+            const langLower = lang.toLowerCase();
+            if (langLower === 'russian') return transliterateCyrillic(text);
+            if (langLower.includes('greek')) return transliterateGreek(text);
+            if (langLower === 'japanese') return transliterateJapanese(text);
+
+            const isLatin = /^[A-Za-z\s\u00C0-\u00FF\-\']+$/.test(text);
+            if (isLatin || langLower === 'gothic' || langLower.includes('old')) return ''; 
+            return '';
+        };
+
+        function getTranslation(wordObj, lang) {
+            if (!wordObj || !lang) return '???';
+            let rawText = wordObj[lang] || '';
+            if (rawText.includes('/')) rawText = rawText.split('/')[0].trim();
+            if (rawText.includes('→')) rawText = rawText.split('→')[0].trim();
+            if (rawText.includes('(')) rawText = rawText.split('(')[0].trim();
+            return rawText.trim();
+        };
+
+        function parseCSV(text) {
+            const rows = [];
+            const lines = text.split(/[\r\n]+/);
+            if (lines.length === 0) return rows;
+            
+            const headers = lines[0].split(',').map(h => h.trim());
+            HEADERS = headers;
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i]) continue;
+                
+                let row = [];
+                let currentCell = '';
+                let insideQuote = false;
+                
+                for (let j = 0; j < lines[i].length; j++) {
+                    const char = lines[i][j];
+                    const nextChar = lines[i][j + 1];
+
+                    if (char === '"') {
+                        if (insideQuote && nextChar === '"') {
+                            currentCell += '"';
+                            j++;
+                        } else {
+                            insideQuote = !insideQuote;
+                        }
+                    } else if (char === ',' && !insideQuote) {
+                        row.push(currentCell.trim());
+                        currentCell = '';
+                    } else {
+                        currentCell += char;
+                    }
+                }
+                row.push(currentCell.trim());
+                
+                if (row.length === headers.length) {
+                    const rowObj = {};
+                    headers.forEach((header, index) => {
+                        rowObj[header] = row[index];
+                    });
+                    DATABASE.push(rowObj);
+                }
+            }
+        }
+        
+        function groupData() {
+            CATEGORIES = {};
+            DATABASE.forEach(row => {
+                const category = row.Category || 'Uncategorized';
+                if (!CATEGORIES[category]) {
+                    CATEGORIES[category] = [];
+                }
+                CATEGORIES[category].push(row);
+            });
+        }
+        
+        function renderDictionary() {
+            dictionaryList.innerHTML = '';
+            const filter = searchInput.value.toLowerCase();
+            
+            for (const category in CATEGORIES) {
+                const words = CATEGORIES[category];
+                const filteredWords = words.filter(word => word.English.toLowerCase().includes(filter));
+                
+                if (filteredWords.length > 0) {
+                    const categoryTitle = document.createElement('h3');
+                    categoryTitle.className = 'category-title';
+                    categoryTitle.textContent = category;
+                    dictionaryList.appendChild(categoryTitle);
+                    
+                    const list = document.createElement('div');
+                    list.className = 'grid grid-cols-2 gap-1';
+                    
+                    filteredWords.forEach(word => {
+                        const button = document.createElement('button');
+                        button.className = 'word-button';
+                        button.textContent = word.English;
+                        button.onclick = () => selectWord(word);
+                        list.appendChild(button);
+                    });
+                    dictionaryList.appendChild(list);
+                }
+            }
+        }
+        
+        function renderForge() {
+            renderSlot(slot1El, slot1, 1);
+            renderSlot(slot2El, slot2, 2);
+            renderResult();
+        }
+        
+        function renderSlot(el, wordObj, slotNum) {
+            if (!wordObj) {
+                el.innerHTML = `<span class="italic opacity-50">Select a Word</span>`;
+                el.className = 'h-32 border-2 border-dashed border-slate-700 rounded-lg flex flex-col items-center justify-center text-slate-500 p-4 relative hover:border-slate-600 hover:bg-slate-800/50 transition-all cursor-default';
+                return;
+            }
+            
+            const translation = getTranslation(wordObj, selectedLanguage);
+            const phonetic = getPhonetic(translation, selectedLanguage);
+            
+            el.className = 'h-32 bg-slate-800 border border-slate-600 rounded-lg flex flex-col justify-center p-4 relative shadow-lg group';
+            el.innerHTML = `
+                <button onclick="clearSlot(${slotNum})" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 rounded-full w-6 h-6 flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">${wordObj.English}</span>
+                <span class="text-2xl font-serif text-white truncate" title="${translation}">${translation}</span>
+                ${phonetic ? `<span class="text-sm text-teal-400 font-mono truncate">/ ${phonetic} /</span>` : ''}
+            `;
+            lucide.createIcons(); // Re-init icons for dynamic content
+        }
+        
+        function renderResult() {
+            if (!slot1 && !slot2) {
+                resultCardEl.innerHTML = `
+                    <i data-lucide="hammer" class="w-12 h-12 text-slate-700 mb-2 opacity-50"></i>
+                    <span class="text-slate-500 text-sm italic">The anvil awaits...</span>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            const trans1 = slot1 ? getTranslation(slot1, selectedLanguage) : '';
+            const trans2 = slot2 ? getTranslation(slot2, selectedLanguage) : '';
+            const phone1 = slot1 ? getPhonetic(trans1, selectedLanguage) : '';
+            const phone2 = slot2 ? getPhonetic(trans2, selectedLanguage) : '';
+            
+            const combinedTrans = `${trans1} ${trans2}`.trim();
+            const combinedPhone = `/ ${phone1} ${phone2} /`.replace(/\/ \//, '/').trim();
+            const literal = `${slot1 ? slot1.English : ''} ${slot2 ? slot2.English : ''}`.trim();
+
+            resultCardEl.innerHTML = `
+                <div class="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-b from-amber-200 to-amber-600 mb-4 tracking-tight">
+                    ${combinedTrans}
+                </div>
+                ${combinedPhone.length > 5 ? `<div class="text-lg text-teal-400 font-mono bg-black/30 inline-block px-4 py-1 rounded mb-4 shadow-inner">${combinedPhone}</div>` : ''}
+                <p class="text-sm text-slate-500">Literal: <span class="font-medium text-slate-300">${literal}</span></p>
+            `;
+        }
+
+        function selectWord(wordObj) {
+            if (!slot1) {
+                slot1 = wordObj;
+            } else if (!slot2) {
+                slot2 = wordObj;
+            } else {
+                slot1 = wordObj;
+                slot2 = null;
+            }
+            renderForge();
+        }
+        
+        window.clearSlot = (slotNum) => {
+            if (slotNum === 1) {
+                slot1 = null;
+            } else {
+                slot2 = null;
+            }
+            renderForge();
+        }
+        
+        function initializeApp() {
+            parseCSV(CSV_DATA);
+            groupData();
+            
+            const languageOptions = HEADERS.filter(h => !['Category', 'English'].includes(h));
+            languageSelect.innerHTML = languageOptions.map(lang => `<option value="${lang}">${lang}</option>`).join('');
+            languageSelect.value = selectedLanguage;
+            
+            languageSelect.onchange = (e) => {
+                selectedLanguage = e.target.value;
+                renderForge();
+            };
+            
+            searchInput.onkeyup = renderDictionary;
+            clearForgeBtn.onclick = () => {
+                slot1 = null;
+                slot2 = null;
+                renderForge();
+            };
+            
+            renderDictionary();
+            renderForge();
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
