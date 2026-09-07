@@ -100,7 +100,7 @@
                     <label for="language-select" class="block text-sm font-medium text-slate-300 mb-2">Target Language</label>
                     <select id="language-select" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"></select>
                     <div class="mt-4 p-3 bg-slate-950 rounded border border-slate-800 text-xs text-slate-500 leading-relaxed">
-                        Some languages like Russian & Japanese include automatic phonetic transliteration.
+                        Automatic phonetic transliteration for Russian, Japanese, Korean, Chinese, Arabic, Hindi, Persian, and Ancient Greek.
                     </div>
                 </div>
             </aside>
@@ -279,6 +279,11 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
         const resultCardEl = document.getElementById('result-card');
         const clearForgeBtn = document.getElementById('clear-forge');
 
+        function capitalizePhonetic(s) {
+            if (!s) return '';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
         function transliterateCyrillic(text) {
             if (!text) return '';
             const map = {
@@ -292,10 +297,12 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Shch', 'Ъ': '', 'Ы': 'Y', 'Ь': "'", 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
             };
             return text.split('').map(char => map[char] || char).join('');
-        };
+        }
 
         function transliterateGreek(text) {
             if (!text) return '';
+            // Strip polytonic diacritics so accented forms still romanize
+            const stripped = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             const map = {
                 'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'e', 'θ': 'th',
                 'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o', 'π': 'p',
@@ -305,7 +312,249 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'Ι': 'I', 'Κ': 'K', 'Λ': 'L', 'Μ': 'M', 'Ν': 'N', 'Ξ': 'X', 'Ο': 'O', 'Π': 'P',
                 'Ρ': 'R', 'Σ': 'S', 'Τ': 'T', 'Υ': 'Y', 'Φ': 'Ph', 'Χ': 'Ch', 'Ψ': 'Ps', 'Ω': 'O'
             };
-            return text.split('').map(char => map[char] || char).join('');
+            return stripped.split('').map(char => map[char] || char).join('');
+        }
+
+        // Revised Romanization of Korean from Hangul syllable Unicode
+        function transliterateKorean(text) {
+            if (!text) return '';
+            const initials = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'];
+            const medials = ['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'];
+            const finals = ['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'];
+            let result = '';
+            for (const char of text) {
+                const code = char.codePointAt(0);
+                if (code >= 0xAC00 && code <= 0xD7A3) {
+                    const s = code - 0xAC00;
+                    const i = Math.floor(s / 588);
+                    const m = Math.floor((s % 588) / 28);
+                    const f = s % 28;
+                    result += initials[i] + medials[m] + finals[f];
+                } else {
+                    result += char;
+                }
+            }
+            return capitalizePhonetic(result);
+        }
+
+        function transliterateArabic(text) {
+            if (!text) return '';
+            const wordMap = {
+                'غابة': 'Ghaba', 'نهر': 'Nahr', 'بحيرة': 'Buhayra', 'بحر': 'Bahr',
+                'جبل': 'Jabal', 'تل': 'Tall', 'وادي': 'Wadi', 'صحراء': 'Sahra',
+                'مستنقع': 'Mustanqa', 'نهر جليدي': 'Nahr Jalidi', 'بركان': 'Burkan', 'جرف': 'Jurf',
+                'كهف': 'Kahf', 'شلال': 'Shallal', 'نار': 'Nar', 'ماء': 'Ma',
+                'أرض': 'Ard', 'العالم': 'Al-Alam', 'حصن': 'Hisn', 'قلعة': 'Qala',
+                'مدينة': 'Madina', 'قرية': 'Qarya', 'طريق': 'Tariq', 'جسر': 'Jisr',
+                'خرابة': 'Kharaba', 'جدار': 'Jidar', 'معبد': 'Mabad', 'منجم': 'Manjam',
+                'زنزانة': 'Zinzana', 'ساحة المعركة': 'Sahat Al-Maraka', 'قبر': 'Qabr', 'بوابة': 'Bawaba',
+                'بئر': 'Bir', 'رجل': 'Rajul', 'امرأة': 'Imraa', 'محارب': 'Muharib',
+                'همجي': 'Hamaji', 'يوم': 'Yawm', 'ليل': 'Layl', 'حياة': 'Hayat',
+                'موت': 'Mawt', 'ولادة': 'Wilada', 'سلاح': 'Silah', 'سيف': 'Sayf',
+                'جري': 'Jary', 'ركوب': 'Rukub', 'ذهب': 'Dhahab', 'فضة': 'Fidda',
+                'فولاذ': 'Fuladh', 'نحاس': 'Nuhas', 'أحمر': 'Ahmar', 'أزرق': 'Azraq',
+                'أخضر': 'Akhdar', 'أسود': 'Aswad', 'أبيض': 'Abyad', 'أصفر': 'Asfar',
+                'بنفسجي': 'Banafsaji', 'بني': 'Bunni', 'رمادي': 'Ramadi', 'برتقالي': 'Burtuqali',
+                'حدود': 'Hudud'
+            };
+            if (wordMap[text]) return wordMap[text];
+            const map = {
+                'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'aa', 'ٱ': 'a', 'ء': '', 'ؤ': 'u', 'ئ': 'i',
+                'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'h', 'خ': 'kh',
+                'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z', 'س': 's', 'ش': 'sh',
+                'ص': 's', 'ض': 'd', 'ط': 't', 'ظ': 'z', 'ع': "'", 'غ': 'gh',
+                'ف': 'f', 'ق': 'q', 'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n',
+                'ه': 'h', 'ة': 'a', 'و': 'w', 'ي': 'y', 'ى': 'a',
+                'َ': 'a', 'ُ': 'u', 'ِ': 'i', 'ّ': '', 'ْ': '', 'ً': 'an', 'ٌ': 'un', 'ٍ': 'in',
+                'ـ': ''
+            };
+            let result = '';
+            for (const char of text) {
+                if (map.hasOwnProperty(char)) result += map[char];
+                else if (char === ' ') result += ' ';
+                else result += char;
+            }
+            return capitalizePhonetic(result);
+        }
+
+        function transliteratePersian(text) {
+            if (!text) return '';
+            const wordMap = {
+                'جنگل': 'Jangal', 'رودخانه': 'Rudkhane', 'دریاچه': 'Daryache', 'دریا': 'Darya',
+                'کوه': 'Kuh', 'تپه': 'Tappe', 'دره': 'Darre', 'بیابان': 'Biaban',
+                'مرداب': 'Mordab', 'یخچال': 'Yakhchal', 'آتشفشان': 'Atashfeshan', 'صخره': 'Sakhre',
+                'غار': 'Ghar', 'آبشار': 'Abshar', 'آتش': 'Atash', 'آب': 'Ab',
+                'زمین': 'Zamin', 'جهان': 'Jahan', 'قلعه': 'Qale', 'قصر': 'Qasr',
+                'شهر': 'Shahr', 'روستا': 'Rusta', 'جاده': 'Jade', 'پل': 'Pol',
+                'ویرانه': 'Virane', 'دیوار': 'Divar', 'معبد': 'Mabad', 'معدن': 'Madan',
+                'سیاه چال': 'Siah Chal', 'میدان جنگ': 'Meydan-e Jang', 'آرامگاه': 'Aramgah', 'دروازه': 'Darvaze',
+                'چاه': 'Chah', 'مرد': 'Mard', 'زن': 'Zan', 'جنگجو': 'Jangju',
+                'وحشی': 'Vahshi', 'روز': 'Ruz', 'شب': 'Shab', 'زندگی': 'Zendegi',
+                'مرگ': 'Marg', 'تولد': 'Tavallod', 'سلاح': 'Selah', 'شمشیر': 'Shamshir',
+                'دویدن': 'Davidan', 'سواری': 'Savari', 'طلا': 'Tala', 'نقره': 'Noghre',
+                'فولاد': 'Fulad', 'مس': 'Mes', 'قرمز': 'Qermez', 'آبی': 'Abi',
+                'سبز': 'Sabz', 'سیاه': 'Siah', 'سفید': 'Sefid', 'زرد': 'Zard',
+                'بنفش': 'Banafsh', 'قهوه‌ای': 'Qahvei', 'خاکستری': 'Khakestari', 'نارنجی': 'Narenji',
+                'مرز': 'Marz'
+            };
+            if (wordMap[text]) return wordMap[text];
+            const map = {
+                'ا': 'a', 'آ': 'aa', 'أ': 'a', 'إ': 'e', 'ء': '',
+                'ب': 'b', 'پ': 'p', 'ت': 't', 'ث': 's', 'ج': 'j', 'چ': 'ch',
+                'ح': 'h', 'خ': 'kh', 'د': 'd', 'ذ': 'z', 'ر': 'r', 'ز': 'z', 'ژ': 'zh',
+                'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'z', 'ط': 't', 'ظ': 'z',
+                'ع': "'", 'غ': 'gh', 'ف': 'f', 'ق': 'gh', 'ک': 'k', 'ك': 'k',
+                'گ': 'g', 'ل': 'l', 'م': 'm', 'ن': 'n', 'و': 'v', 'ه': 'h', 'ة': 'h',
+                'ی': 'y', 'ي': 'y', 'ى': 'y',
+                'َ': 'a', 'ُ': 'o', 'ِ': 'e', 'ّ': '', 'ْ': ''
+            };
+            let result = '';
+            for (const char of text) {
+                if (char === '\u200c' || char.charCodeAt(0) === 0x200c) continue;
+                if (map.hasOwnProperty(char)) result += map[char];
+                else if (char === ' ') result += ' ';
+                else result += char;
+            }
+            return capitalizePhonetic(result);
+        }
+
+        function transliterateHindi(text) {
+            if (!text) return '';
+            const wordMap = {
+                'वन': 'Van', 'नदी': 'Nadi', 'झील': 'Jheel', 'सागर': 'Sagar',
+                'पहाड़': 'Pahad', 'पहाड़ी': 'Pahari', 'घाटी': 'Ghati', 'रेगिस्तान': 'Registan',
+                'दलदल': 'Daladal', 'हिमनद': 'Himnad', 'ज्वालामुखी': 'Jvalamukhi', 'चट्टान': 'Chattan',
+                'गुफा': 'Gufa', 'जलप्रपात': 'Jalprapat', 'आग': 'Aag', 'पानी': 'Pani',
+                'पृथ्वी': 'Prithvi', 'दुनिया': 'Duniya', 'किला': 'Qila', 'महल': 'Mahal',
+                'शहर': 'Shahar', 'गाँव': 'Gaon', 'सड़क': 'Sadak', 'पुल': 'Pul',
+                'खंडहर': 'Khandahar', 'दीवार': 'Deewar', 'मंदिर': 'Mandir', 'खान': 'Khan',
+                'कालकोठरी': 'Kalkothri', 'रणभूमि': 'Ranbhumi', 'मकबरा': 'Maqbara', 'द्वार': 'Dwar',
+                'कुआँ': 'Kuan', 'पुरुष': 'Purush', 'महिला': 'Mahila', 'योद्धा': 'Yoddha',
+                'जंगली': 'Jangli', 'दिन': 'Din', 'रात': 'Raat', 'जीवन': 'Jeevan',
+                'मृत्यु': 'Mrityu', 'जन्म': 'Janm', 'हथियार': 'Hathiyar', 'तलवार': 'Talwar',
+                'दौड़': 'Daud', 'सवारी': 'Sawari', 'सोना': 'Sona', 'चांदी': 'Chandi',
+                'इस्पात': 'Ispat', 'तांबा': 'Tamba', 'लाल': 'Lal', 'नीला': 'Neela',
+                'हरा': 'Hara', 'काला': 'Kala', 'सफेद': 'Safed', 'पीला': 'Peela',
+                'बैंगनी': 'Baingani', 'भूरा': 'Bhura', 'धूसर': 'Dhusar', 'नारंगी': 'Narangi',
+                'सीमा': 'Seema'
+            };
+            if (wordMap[text]) return wordMap[text];
+            const vowels = {
+                'अ': 'a', 'आ': 'aa', 'इ': 'i', 'ई': 'ii', 'उ': 'u', 'ऊ': 'uu', 'ऋ': 'ri',
+                'ए': 'e', 'ऐ': 'ai', 'ओ': 'o', 'औ': 'au'
+            };
+            const consonants = {
+                'क': 'k', 'ख': 'kh', 'ग': 'g', 'घ': 'gh', 'ङ': 'ng',
+                'च': 'ch', 'छ': 'chh', 'ज': 'j', 'झ': 'jh', 'ञ': 'ny',
+                'ट': 't', 'ठ': 'th', 'ड': 'd', 'ढ': 'dh', 'ण': 'n',
+                'त': 't', 'थ': 'th', 'द': 'd', 'ध': 'dh', 'न': 'n',
+                'प': 'p', 'फ': 'ph', 'ब': 'b', 'भ': 'bh', 'म': 'm',
+                'य': 'y', 'र': 'r', 'ल': 'l', 'व': 'v', 'ळ': 'l',
+                'श': 'sh', 'ष': 'sh', 'स': 's', 'ह': 'h'
+            };
+            const nuktaCons = {
+                'क़': 'q', 'ख़': 'kh', 'ग़': 'gh', 'ज़': 'z', 'ड़': 'r', 'ढ़': 'rh', 'फ़': 'f'
+            };
+            const matras = {
+                'ा': 'aa', 'ि': 'i', 'ी': 'ii', 'ु': 'u', 'ू': 'uu', 'ृ': 'ri',
+                'े': 'e', 'ै': 'ai', 'ो': 'o', 'ौ': 'au', 'ं': 'n', 'ः': 'h', 'ँ': 'n'
+            };
+            const virama = '्';
+            const nukta = '़';
+
+            let result = '';
+            let i = 0;
+            while (i < text.length) {
+                const ch = text[i];
+                const next = text[i + 1] || '';
+                const pair = ch + next;
+
+                if (ch === ' ' || ch === '-' || ch === "'") {
+                    result += ch;
+                    i++;
+                    continue;
+                }
+                if (vowels[ch]) {
+                    result += vowels[ch];
+                    i++;
+                    continue;
+                }
+                let cons = null;
+                let advance = 1;
+                if (nuktaCons[pair]) {
+                    cons = nuktaCons[pair];
+                    advance = 2;
+                } else if (consonants[ch]) {
+                    cons = consonants[ch];
+                    if (next === nukta) advance = 2;
+                }
+                if (cons !== null) {
+                    i += advance;
+                    const after = text[i] || '';
+                    if (after === virama) {
+                        result += cons;
+                        i++;
+                    } else if (matras[after]) {
+                        result += cons + matras[after];
+                        i++;
+                    } else {
+                        // Inherent 'a'; drop at end of word (before space/end)
+                        const ahead = text[i] || '';
+                        if (!ahead || ahead === ' ') result += cons;
+                        else result += cons + 'a';
+                    }
+                    continue;
+                }
+                if (matras[ch]) {
+                    result += matras[ch];
+                    i++;
+                    continue;
+                }
+                result += ch;
+                i++;
+            }
+            return capitalizePhonetic(result);
+        }
+
+        function transliterateChinese(text) {
+            if (!text) return '';
+            const pinyinMap = {
+                '森林': 'Senlin', '河流': 'Heliu', '湖': 'Hu', '海': 'Hai', '山': 'Shan',
+                '丘陵': 'Qiuling', '山谷': 'Shangu', '沙漠': 'Shamo', '沼泽': 'Zhaoze',
+                '冰川': 'Bingchuan', '火山': 'Huoshan', '悬崖': 'Xuanya', '洞穴': 'Dongxue',
+                '瀑布': 'Pubu', '火': 'Huo', '水': 'Shui', '大地': 'Dadi', '世界': 'Shijie',
+                '堡垒': 'Baolei', '城堡': 'Chengbao', '城市': 'Chengshi', '村庄': 'Cunzhuang',
+                '道路': 'Daolu', '桥': 'Qiao', '废墟': 'Feixu', '墙': 'Qiang', '寺庙': 'Simiao',
+                '矿': 'Kuang', '地牢': 'Dilao', '战场': 'Zhanchang', '坟墓': 'Fenmu',
+                '门户': 'Menhu', '井': 'Jing', '男人': 'Nanren', '女人': 'Nuren',
+                '战士': 'Zhanshi', '野蛮人': 'Yemanren', '天': 'Tian', '夜': 'Ye',
+                '生活': 'Shenghuo', '死亡': 'Siwang', '出生': 'Chusheng', '武器': 'Wuqi',
+                '剑': 'Jian', '跑步': 'Paobu', '骑': 'Qi', '金': 'Jin', '银': 'Yin',
+                '钢': 'Gang', '铜': 'Tong', '红色': 'Hongse', '蓝色': 'Lanse', '绿色': 'Luse',
+                '黑色': 'Heise', '白色': 'Baise', '黄色': 'Huangse', '紫色': 'Zise',
+                '棕色': 'Zongse', '灰色': 'Huise', '橙色': 'Chengse', '边界': 'Bianjie'
+            };
+            if (pinyinMap[text]) return pinyinMap[text];
+            // Fallback: try longest-prefix greedy match for unknowns
+            let remaining = text;
+            let out = '';
+            while (remaining.length) {
+                let matched = false;
+                for (let len = remaining.length; len >= 1; len--) {
+                    const chunk = remaining.slice(0, len);
+                    if (pinyinMap[chunk]) {
+                        out += pinyinMap[chunk].toLowerCase();
+                        remaining = remaining.slice(len);
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    out += remaining[0];
+                    remaining = remaining.slice(1);
+                }
+            }
+            return capitalizePhonetic(out);
         }
 
         function transliterateJapanese(text) {
@@ -325,7 +574,10 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 '空': 'Sora', '昼': 'Hiru', '夜': 'Yoru', '死': 'Shi', '生': 'Sei', '命': 'Inochi',
                 '誕生': 'Tanjō', '剣': 'Ken', '武器': 'Buki', '世界': 'Sekai', '走る': 'Hashiru',
                 '乗る': 'Noru',
-                '金': 'Kin', '銀': 'Gin', '鋼': 'Hagane', '銅': 'Dō'
+                '金': 'Kin', '銀': 'Gin', '鋼': 'Hagane', '銅': 'Dō',
+                // Colors + border (CSV gaps filled)
+                '赤': 'Aka', '青': 'Ao', '緑': 'Midori', '黒': 'Kuro', '白': 'Shiro',
+                '黄': 'Ki', '紫': 'Murasaki', '茶色': 'Chairo', '灰色': 'Haiiro', '国境': 'Kokkyō'
             };
             if (kanjiMap[text]) return kanjiMap[text];
             const kanaMap = {
@@ -346,37 +598,43 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'マ':'ma','ミ':'mi','ム':'mu','メ':'me','モ':'mo','ヤ':'ya','ユ':'yu','ヨ':'yo','ラ':'ra','リ':'ri',
                 'ル':'ru','レ':'re','ロ':'ro','ワ':'wa','ヲ':'wo','ン':'n','ガ':'ga','ギ':'gi','グ':'gu','ゲ':'ge','ゴ':'go',
                 'ザ':'za','ジ':'ji','ズ':'zu','ゼ':'ze','ゾ':'zo','ダ':'da','ヂ':'ji','ヅ':'zu','デ':'de','ド':'do',
-                'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo','パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po','ー':'-'
+                'バ':'ba','ビ':'bi','ブ':'bu','ベ':'be','ボ':'bo','パ':'pa','ピ':'pi','プ':'pu','ペ':'pe','ポ':'po','ー':'-',
+                'ャ':'ya','ュ':'yu','ョ':'yo','ッ':''
             };
             let result = '';
             for (let i = 0; i < text.length; i++) {
                 const c = text[i];
                 const next = text[i+1];
-                const combo = c + next;
-                if (kanaMap[combo]) {
+                const combo = c + (next || '');
+                if (next && kanaMap[combo]) {
                     result += kanaMap[combo];
-                    i++; 
+                    i++;
                 } else {
                     result += kanaMap[c] || c;
                 }
             }
-            return result.charAt(0).toUpperCase() + result.slice(1);
+            return capitalizePhonetic(result);
         }
-        
+
         function getPhonetic(text, lang) {
             if (!text) return '';
             if (text.includes('→')) return text.split('→')[1].trim();
             if (text.includes('(')) return text.match(/\(([^)]+)\)/)?.[1] || '';
-            
+
             const langLower = lang.toLowerCase();
             if (langLower === 'russian') return transliterateCyrillic(text);
             if (langLower.includes('greek')) return transliterateGreek(text);
             if (langLower === 'japanese') return transliterateJapanese(text);
+            if (langLower === 'korean') return transliterateKorean(text);
+            if (langLower === 'arabic') return transliterateArabic(text);
+            if (langLower === 'hindi') return transliterateHindi(text);
+            if (langLower === 'chinese') return transliterateChinese(text);
+            if (langLower === 'persian') return transliteratePersian(text);
 
             const isLatin = /^[A-Za-z\s\u00C0-\u00FF\-\']+$/.test(text);
-            if (isLatin || langLower === 'gothic' || langLower.includes('old')) return ''; 
+            if (isLatin || langLower === 'gothic' || langLower.includes('old')) return '';
             return '';
-        };
+        }
 
         function getTranslation(wordObj, lang) {
             if (!wordObj || !lang) return '???';
