@@ -166,7 +166,7 @@
                 <div class="space-y-2">
                     <h3 class="text-amber-500 font-bold text-xs uppercase tracking-wider">About The Forge</h3>
                     <p class="text-slate-400 text-xs leading-relaxed">
-                        A free tool for fantasy writers, D&D players, and worldbuilders to create meaning-based names in 20+ languages including Gothic, Old Norse, and Japanese.
+                        A free tool for fantasy writers, D&D players, and worldbuilders to create meaning-based names in 20+ languages including Gothic, Old Norse, Japanese, Orc, and Elven.
                     </p>
                 </div>
 
@@ -200,68 +200,68 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        const CSV_DATA = `Category,English,French,German,Spanish,Italian,Russian,Arabic,Hindi,Chinese,Japanese,Korean,Portuguese,Turkish,Swahili,Persian,Old English,Old Norse,Gothic,Latin,Ancient Greek
-Natural,Forest,Forêt,Wald,Bosque,Foresta,Лес,غابة,वन,森林,森,숲,Floresta,Orman,Misitu,جنگل,Wudu,Skógar,Widus,Silva,Ὕλη
-Natural,River,Rivière,Fluss,Río,Fiume,Река,نهر,नदी,河流,川,강,Rio,Nehir,Mto,رودخانه,Ēa,Ár,Ahwa,Flumen,Ποταμός
-Natural,Lake,Lac,See,Lago,Lago,Озеро,بحيرة,झील,湖,湖,호수,Lago,Göl,Ziwa,دریاچه,Mere,Vatn,Saiws,Lacus,Λίμνη
-Natural,Sea,Mer,Meer,Mar,Mare,Море,بحر,सागर,海,海,바다,Mar,Deniz,Bahari,دریا,Sǣ,Haf,Marei,Mare,Θάλασσα
-Natural,Mountain,Montagne,Berg,Montaña,Montagna,Гора,جبل,पहाड़,山,山,산,Montanha,Dağ,Mlima,کوه,Beorg,Fjall,Fairguni,Mons,OKος
-Natural,Hill,Colline,Hügel,Colina,Collina,Холм,تل,पहाड़ी,丘陵,丘,언덕,Colina,Tepe,Kilima,تپه,Hyll,Hóll,Hlain,Collis,Λόφος
-Natural,Valley,Vallée,Tal,Valle,Valle,Долина,وادي,घाटी,山谷,谷,계곡,Vale,Vadi,Bonde,دره,Denu,Dalr,Dal,Vallis,Νάπη
-Natural,Desert,Désert,Wüste,Desierto,Deserto,Пустыня,صحراء,रेगिस्तान,沙漠,砂漠,사막,Deserto,Çöl,Jangwa,بیابان,Wēsten,Auðn,Auþida,Deserta,Ἔρημος
-Natural,Swamp,Marais,Sumpf,Pantano,Palude,Болото,مستنقع,दलदल,沼泽,沼,늪,Pântano,Bataklık,Kinamasi,مرداب,Fenn,Fen,Fani,Palus,Έλος
-Natural,Glacier,Glacier,Gletscher,Glaciar,Ghiacciaio,Ледник,نهر جليدي,हिमनद,冰川,氷河,빙하,Geleira,Buzul,Barafu,یخچال,Ís,Jökull,Is,Glacies,Κρύσταλλος
-Natural,Volcano,Volcan,Vulkan,Volcán,Vulcano,Вулкан,بركان,ज्वालामुखी,火山,火山,화산,Vulcão,Yanardağ,Volkano,آتشفشان,Fȳrbeorg,Eldfjall,Fon,Vulcanus,Ηφαίστειον
-Natural,Cliff,Falaise,Klippe,Acantilado,Scogliera,Скала,جرف,चट्टान,悬崖,崖,절벽,Penhasco,Uçurum,Genze,صخره,Clif,Kleyf,Driuso,Rupes,Κρημνός
-Natural,Cave,Grotte,Höhle,Cueva,Grotta,Пещера,كهف,गुफा,洞穴,洞窟,동굴,Caverna,Mağara,Pango,غار,Scræf,Hellir,Grōba,Spelunca,Σπήλαιον
-Natural,Waterfall,Cascade,Wasserfall,Cascada,Cascata,Водопад,شلال,जलप्रपात,瀑布,滝,폭포,Cachoeira,Şelale,Maporomoko,آبشار,Wætergefeall,Foss,Driusfall,Cataracta,Καταρράκτης
-Natural,Fire,Feu,Feuer,Fuego,Fuoco,Огонь,نار,आग,火,火,불,Fogo,Ateş,Moto,آتش,Fyr,Eldur,Fon,Ignis,Πῦρ
-Natural,Water,Eau,Wasser,Agua,Acqua,Вода,ماء,पानी,水,水,물,Água,Su,Maji,آب,Wæter,Vatn,Wato,Aqua,ὕδωρ
-Natural,Earth,Terre,Erde,Tierra,Terra,Земля,أرض,पृथ्वी,大地,地,땅,Terra,Toprak,Ardhi,زمین,Eorðe,Jörð,Airþa,Terra,Γῆ
-Natural,World,Monde,Welt,Mundo,Mondo,Мир,العالم,दुनिया,世界,世界,세계,Mundo,Dünya,Dunia,جهان,Woruld,Heimr,Fairhvus,Mundus,Κόσμος
-Structures,Fort,Fort,Festung,Fuerte,Forte,Форт,حصن,किला,堡垒,要塞,요새,Forte,Kale,Ngome,قلعه,Fæsten,Virki,Baurgs,Castellum,Φρούριον
-Structures,Castle,Château,Schloss,Castillo,Castello,Замок,قلعة,महल,城堡,城,성,Castelo,Şato,Kasri,قصر,Castel,Kastali,Baurgs,Castellum,Πύργος
-Structures,City,Ville,Stadt,Ciudad,Città,Город,مدينة,शहर,城市,都市,도시,Cidade,Şehir,Mji,شهر,Burh,Borg,Baurgs,Urbs,Πόλις
-Structures,Village,Village,Dorf,Pueblo,Villaggio,Деревня,قرية,गाँव,村庄,村,마을,Aldea,Köy,Kijiji,روستا,Tūn,Þorp,Weihs,Vicus,Κώμη
-Structures,Road,Route,Straße,Camino,Strada,Дорога,طريق,सड़क,道路,道,길,Estrada,Yol,Barabara,جاده,Weġ,Vegr,Wigs,Via,Ὁδός
-Structures,Bridge,Pont,Brücke,Puente,Ponte,Мост,جسر,पुल,桥,橋,다리,Ponte,Köprü,Daraja,پل,Brycġ,Brú,Brugga,Pons,Γέφυρα
-Structures,Ruin,Ruine,Ruine,Ruina,Rovina,Руина,خرابة,खंडहर,废墟,廃墟,폐허,Ruína,Harabe,Magofu,ویرانه,Hryre,Rúst,Uswalts,Ruina,Ερείπιον
-Structures,Wall,Mur,Wauer,Muro,Muro,Стена,جدار,दीवार,墙,壁,벽,Muro,Duvar,Ukuta,دیوار,Weall,Veggr,Waddjus,Murus,Τεῖχος
-Structures,Temple,Temple,Tempel,Templo,Tempio,Храм,معبد,मंदिर,寺庙,寺,사원,Templo,Tapınak,Hekalu,معبد,Tempel,Hof,Alhs,Templum,Ναός
-Structures,Mine,Mine,Mine,Mina,Miniera,Шахта,منجم,खान,矿,鉱山,광산,Mina,Maden,Mgodi,معدن,Mīn,Nám,Grōba,Fodina,Μεταλλεῖον
-Structures,Dungeon,Donjon,Verlies,Mazmorra,Sotterraneo,Подземелье,زنزانة,कालकोठरी,地牢,地下牢,지하 감옥,Masmorra,Zindan,Gereza,سیاه چال,Cweartern,Myrkvastofa,Karkara,Carcer,Δεσμωτήριον
-Structures,Battlefield,Champ de bataille,Schlachtfeld,Campo de batalla,Campo di battaglia,Поле битвы,ساحة المعركة,रणभूमि,战场,戦場,전장,Campo de batalha,Savaş alanı,Uwanja wa vita,میدان جنگ,Wælstōw,Völlr,Walus,Acies,Μάχη
-Structures,Tomb,Tombeau,Grab,Tumba,Tomba,Гробница,قبر,मकबरा,坟墓,墓,무덤,Tumba,Mezar,Kaburi,آرامگاه,Byrgen,Haugr,Hlaiw,Sepulcrum,Τύμβος
-Structures,Portal,Portail,Portal,Portal,Portale,Портал,بوابة,द्वार,门户,門,포털,Portal,Kapı,Lango,دروازه,Geat,Gatt,Daur,Porta,Πύλη
-Structures,Well,Puits,Brunnen,Pozo,Pozzo,Колодец,بئر,कुआँ,井,井戸,우물,Poço,Kuyu,Kisima,چاه,Wylle,Brunnr,Brunna,Puteus,Φρέαρ
-People,Man,Homme,Mann,Hombre,Uomo,Мужчина,رجل,पुरुष,男人,男,남자,Homem,Adam,Mwanaume,مرد,Wer,Maðr,Wair,Vir,Ἀνήρ
-People,Woman,Femme,Frau,Mujer,Donna,Женщина,امرأة,महिला,女人,女,여자,Mulher,Kadın,Mwanamke,زن,Wīf,Kona,Qinō,Femina,Γυνή
-People,Warrior,Guerrier,Krieger,Guerrero,Guerriero,Воин,محارب,योद्धा,战士,戦士,전사,Guerreiro,Savaşçı,Shujaa,جنگجو,Wiga,Hermaðr,Gadrauhts,Bellator,Πολεμιστής
-People,Savage,Sauvage,Wilder,Salvaje,Selvaggio,Дикарь,همجي,जंगली,野蛮人,野蛮人,야만인,Selvagem,Vahşi,Mkatili,وحشی,Wilde,Villr,Wilþeis,Barbarus,Βάρβαρος
-Concepts,Day,Jour,Tag,Día,Giorno,День,يوم,दिन,天,昼,낮,Dia,Gün,Siku,روز,Dæġ,Dagr,Dags,Dies,Ἡμέρα
-Concepts,Night,Nuit,Nacht,Noche,Notte,Ночь,ليل,रात,夜,夜,밤,Noite,Gece,Usiku,شب,Niht,Nótt,Nahts,Nox,Νύξ
-Concepts,Life,Vie,Leben,Vida,Vita,Жизнь,حياة,जीवन,生活,命,삶,Vida,Hayat,Maisha,زندگی,Līf,Líf,Libains,Vita,Βίος
-Concepts,Death,Mort,Tod,Muerte,Morte,Смерть,موت,मृत्यु,死亡,死,죽음,Morte,Ölüm,Kifo,مرگ,Dēað,Dauði,Dauþus,Mors,Θάνατος
-Concepts,Birth,Naissance,Geburt,Nacimiento,Nascita,Рождение,ولادة,जन्म,出生,誕生,탄생,Nascimento,Doğum,Uzazi,تولد,Beorþ,Burðr,Gabaurþs,Natus,Γένεσις
-Concepts,Weapon,Arme,Waffe,Arma,Arma,Оружие,سلاح,हथियार,武器,武器,무기,Arma,Silah,Silaha,سلاح,Wǣpn,Vápn,Wepna,Telum,Ὅπλον
-Concepts,Sword,Épée,Schwert,Espada,Spada,Меч,سيف,तलवार,剑,剣,검,Espada,Kılıç,Upanga,شمشیر,Sweord,Sverð,Hairus,Gladius,Ξίφος
-Concepts,Running,Courir,Laufen,Correr,Correre,Бег,جري,दौड़,跑步,走る,달리기,Correr,Koşma,Kukimbia,دویدن,Rynel,Rás,Rinnan,Currens,Τρέχων
-Concepts,Ride,Monter,Reiten,Montar,Cavalcare,Езда,ركوب,सवारी,骑,乗る,타기,Montar,Binmek,Kupanda,سواری,Rād,Reið,Ridan,Equitare,Ἱππεύω
-Materials,Gold,Or,Gold,Oro,Oro,Золото,ذهب,सोना,金,金,금,Ouro,Altın,Dhahabu,طلا,Gold,Gull,Gulþ,Aurum,Χρυσός
-Materials,Silver,Argent,Silber,Plata,Argento,Серебро,فضة,चांदी,银,銀,은,Prata,Gümüş,Fedha,نقره,Seolfor,Silfr,Silubr,Argentum,Ἄργυρος
-Materials,Steel,Acier,Stahl,Acero,Acciaio,Сталь,فولاذ,इस्पात,钢,鋼,강철,Aço,Çelik,Chuma,فولاد,Stȳle,Stál,*Stals,Chalybs,Χάλυψ
-Materials,Copper,Cuivre,Kupfer,Cobre,Rame,Медь,نحاس,तांबा,铜,銅,구리,Cobre,Bakır,Shaba,مس,Ār,Eir,Aiz,Cuprum,Χαλκός
-Colors,Red,Rouge,Rot,Rojo,Rosso,Красный,أحمر,लाल,红色,赤,빨강,Vermelho,Kırmızı,Nyekundu,قرمز,Rēad,Rauðr,,Ruber,Ἐρυθρός
-Colors,Blue,Bleu,Blau,Azul,Blu,Синий,أزرق,नीला,蓝色,青,파랑,Azul,Mavi,Bluu,آبی,Blāw,Blár,,Caeruleus,Κυανός
-Colors,Green,Vert,Grün,Verde,Verde,Зелёный,أخضر,हरा,绿色,緑,초록,Verde,Yeşil,Kijani,سبز,Grēne,Grœnn,,Viridis,Χλωρός
-Colors,Black,Noir,Schwarz,Negro,Nero,Чёрный,أسود,काला,黑色,黒,검정,Preto,Siyah,Nyeusi,سیاه,Blæc,Svartr,,Niger,Μέλας
-Colors,White,Blanc,Weiß,Blanco,Bianco,Белый,أبيض,सफेद,白色,白,하양,Branco,Beyaz,Nyeupe,سفید,Hwīt,Hvítr,,Albus,Λευκός
-Colors,Yellow,Jaune,Gelb,Amarillo,Giallo,Жёлтый,أصفر,पीला,黄色,黄,노랑,Amarelo,Sarı,Njano,زرد,Geolu,Gulr,,Flavus,Ξανθός
-Colors,Purple,Violet,Lila,Morado,Viola,Фиолетовый,بنفسجي,बैंगनी,紫色,紫,보라,Roxo,Mor,Zambarau,بنفش,Purpur,Purpuri,,Purpureus,Πορφυρός
-Colors,Brown,Marron,Braun,Marrón,Marrone,Коричневый,بني,भूरा,棕色,茶色,갈색,Marrom,Kahverengi,Kahawia,قهوه‌ای,Brūn,Brúnn,,Brunneus,Φαιός
-Colors,Gray,Gris,Grau,Gris,Grigio,Серый,رمادي,धूसर,灰色,灰色,회색,Cinza,Gri,Kijivu,خاکستری,Grǣg,Grár,,Canus,Γλαυκός
-Colors,Orange,Orange,Orange,Naranja,Arancione,Оранжевый,برتقالي,नारंगी,橙色,オレンジ,주황,Laranja,Turuncu,Chungwa,نارنجی,,,,Aurantius,Πορτοκαλί
-Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,सीमा,边界,国境,국경,Fronteira,Sınır,Mpaka,مرز,Gemǣre,Landamæri,,Limes,Ὅριον
+        const CSV_DATA = `Category,English,French,German,Spanish,Italian,Russian,Arabic,Hindi,Chinese,Japanese,Korean,Portuguese,Turkish,Swahili,Persian,Old English,Old Norse,Gothic,Latin,Ancient Greek,Orc,Elven
+Natural,Forest,Forêt,Wald,Bosque,Foresta,Лес,غابة,वन,森林,森,숲,Floresta,Orman,Misitu,جنگل,Wudu,Skógar,Widus,Silva,Ὕλη,Gurzukh,Lasgalor
+Natural,River,Rivière,Fluss,Río,Fiume,Река,نهر,नदी,河流,川,강,Rio,Nehir,Mto,رودخانه,Ēa,Ár,Ahwa,Flumen,Ποταμός,Snargul,Sirneth
+Natural,Lake,Lac,See,Lago,Lago,Озеро,بحيرة,झील,湖,湖,호수,Lago,Göl,Ziwa,دریاچه,Mere,Vatn,Saiws,Lacus,Λίμνη,Zugul,Aelinë
+Natural,Sea,Mer,Meer,Mar,Mare,Море,بحر,सागर,海,海,바다,Mar,Deniz,Bahari,دریا,Sǣ,Haf,Marei,Mare,Θάλασσα,Zogmar,Aearon
+Natural,Mountain,Montagne,Berg,Montaña,Montagna,Гора,جبل,पहाड़,山,山,산,Montanha,Dağ,Mlima,کوه,Beorg,Fjall,Fairguni,Mons,OKος,Gundakh,Orodhel
+Natural,Hill,Colline,Hügel,Colina,Collina,Холм,تل,पहाड़ी,丘陵,丘,언덕,Colina,Tepe,Kilima,تپه,Hyll,Hóll,Hlain,Collis,Λόφος,Kragosh,Amonel
+Natural,Valley,Vallée,Tal,Valle,Valle,Долина,وادي,घाटी,山谷,谷,계곡,Vale,Vadi,Bonde,دره,Denu,Dalr,Dal,Vallis,Νάπη,Durzog,Imladë
+Natural,Desert,Désert,Wüste,Desierto,Deserto,Пустыня,صحراء,रेगिस्तान,沙漠,砂漠,사막,Deserto,Çöl,Jangwa,بیابان,Wēsten,Auðn,Auþida,Deserta,Ἔρημος,Ashnak,Lossar
+Natural,Swamp,Marais,Sumpf,Pantano,Palude,Болото,مستنقع,दलदल,沼泽,沼,늪,Pântano,Bataklık,Kinamasi,مرداب,Fenn,Fen,Fani,Palus,Έλος,Murzgash,Fenlas
+Natural,Glacier,Glacier,Gletscher,Glaciar,Ghiacciaio,Ледник,نهر جليدي,हिमनद,冰川,氷河,빙하,Geleira,Buzul,Barafu,یخچال,Ís,Jökull,Is,Glacies,Κρύσταλλος,Izkhul,Helcar
+Natural,Volcano,Volcan,Vulkan,Volcán,Vulcano,Вулкан,بركان,ज्वालामुखी,火山,火山,화산,Vulcão,Yanardağ,Volkano,آتشفشان,Fȳrbeorg,Eldfjall,Fon,Vulcanus,Ηφαίστειον,Ghâshok,Orófëa
+Natural,Cliff,Falaise,Klippe,Acantilado,Scogliera,Скала,جرف,चट्टान,悬崖,崖,절벽,Penhasco,Uçurum,Genze,صخره,Clif,Kleyf,Driuso,Rupes,Κρημνός,Skarog,Rachdor
+Natural,Cave,Grotte,Höhle,Cueva,Grotta,Пещера,كهف,गुफा,洞穴,洞窟,동굴,Caverna,Mağara,Pango,غار,Scræf,Hellir,Grōba,Spelunca,Σπήλαιον,Grobul,Felegar
+Natural,Waterfall,Cascade,Wasserfall,Cascada,Cascata,Водопад,شلال,जलप्रपात,瀑布,滝,폭포,Cachoeira,Şelale,Maporomoko,آبشار,Wætergefeall,Foss,Driusfall,Cataracta,Καταρράκτης,Shazrok,Lanthir
+Natural,Fire,Feu,Feuer,Fuego,Fuoco,Огонь,نار,आग,火,火,불,Fogo,Ateş,Moto,آتش,Fyr,Eldur,Fon,Ignis,Πῦρ,Ghashûk,Nárë
+Natural,Water,Eau,Wasser,Agua,Acqua,Вода,ماء,पानी,水,水,물,Água,Su,Maji,آب,Wæter,Vatn,Wato,Aqua,ὕδωρ,Lugz,Nenith
+Natural,Earth,Terre,Erde,Tierra,Terra,Земля,أرض,पृथ्वी,大地,地,땅,Terra,Toprak,Ardhi,زمین,Eorðe,Jörð,Airþa,Terra,Γῆ,Durgaz,Kemen
+Natural,World,Monde,Welt,Mundo,Mondo,Мир,العالم,दुनिया,世界,世界,세계,Mundo,Dünya,Dunia,جهان,Woruld,Heimr,Fairhvus,Mundus,Κόσμος,Hordukh,Earessë
+Structures,Fort,Fort,Festung,Fuerte,Forte,Форт,حصن,किला,堡垒,要塞,요새,Forte,Kale,Ngome,قلعه,Fæsten,Virki,Baurgs,Castellum,Φρούριον,Burgash,Ostbar
+Structures,Castle,Château,Schloss,Castillo,Castello,Замок,قلعة,महल,城堡,城,성,Castelo,Şato,Kasri,قصر,Castel,Kastali,Baurgs,Castellum,Πύργος,Durbash,Baradhel
+Structures,City,Ville,Stadt,Ciudad,Città,Город,مدينة,शहर,城市,都市,도시,Cidade,Şehir,Mji,شهر,Burh,Borg,Baurgs,Urbs,Πόλις,Bolzug,Ostariel
+Structures,Village,Village,Dorf,Pueblo,Villaggio,Деревня,قرية,गाँव,村庄,村,마을,Aldea,Köy,Kijiji,روستا,Tūn,Þorp,Weihs,Vicus,Κώμη,Snagath,Pellin
+Structures,Road,Route,Straße,Camino,Strada,Дорога,طريق,सड़क,道路,道,길,Estrada,Yol,Barabara,جاده,Weġ,Vegr,Wigs,Via,Ὁδός,Kragûn,Menelath
+Structures,Bridge,Pont,Brücke,Puente,Ponte,Мост,جسر,पुल,桥,橋,다리,Ponte,Köprü,Daraja,پل,Brycġ,Brú,Brugga,Pons,Γέφυρα,Zogdu,Ianthel
+Structures,Ruin,Ruine,Ruine,Ruina,Rovina,Руина,خرابة,खंडहर,废墟,廃墟,폐허,Ruína,Harabe,Magofu,ویرانه,Hryre,Rúst,Uswalts,Ruina,Ερείπιον,Rukhash,Ambarth
+Structures,Wall,Mur,Wauer,Muro,Muro,Стена,جدار,दीवार,墙,壁,벽,Muro,Duvar,Ukuta,دیوار,Weall,Veggr,Waddjus,Murus,Τεῖχος,Grondak,Ramath
+Structures,Temple,Temple,Tempel,Templo,Tempio,Храм,معبد,मंदिर,寺庙,寺,사원,Templo,Tapınak,Hekalu,معبد,Tempel,Hof,Alhs,Templum,Ναός,Ukhshal,Alquen
+Structures,Mine,Mine,Mine,Mina,Miniera,Шахта,منجم,खान,矿,鉱山,광산,Mina,Maden,Mgodi,معدن,Mīn,Nám,Grōba,Fodina,Μεταλλεῖον,Digroth,Hadhod
+Structures,Dungeon,Donjon,Verlies,Mazmorra,Sotterraneo,Подземелье,زنزانة,कालकोठरी,地牢,地下牢,지하 감옥,Masmorra,Zindan,Gereza,سیاه چال,Cweartern,Myrkvastofa,Karkara,Carcer,Δεσμωτήριον,Pitgash,Undomë
+Structures,Battlefield,Champ de bataille,Schlachtfeld,Campo de batalla,Campo di battaglia,Поле битвы,ساحة المعركة,रणभूमि,战场,戦場,전장,Campo de batalha,Savaş alanı,Uwanja wa vita,میدان جنگ,Wælstōw,Völlr,Walus,Acies,Μάχη,Skirmog,Maethorn
+Structures,Tomb,Tombeau,Grab,Tumba,Tomba,Гробница,قبر,मकबरा,坟墓,墓,무덤,Tumba,Mezar,Kaburi,آرامگاه,Byrgen,Haugr,Hlaiw,Sepulcrum,Τύμβος,Gravukh,Sarnath
+Structures,Portal,Portail,Portal,Portal,Portale,Портал,بوابة,द्वार,门户,門,포털,Portal,Kapı,Lango,دروازه,Geat,Gatt,Daur,Porta,Πύλη,Durgate,Annonë
+Structures,Well,Puits,Brunnen,Pozo,Pozzo,Колодец,بئر,कुआँ,井,井戸,우물,Poço,Kuyu,Kisima,چاه,Wylle,Brunnr,Brunna,Puteus,Φρέαρ,Zulgar,Lathril
+People,Man,Homme,Mann,Hombre,Uomo,Мужчина,رجل,पुरुष,男人,男,남자,Homem,Adam,Mwanaume,مرد,Wer,Maðr,Wair,Vir,Ἀνήρ,Tarkog,Adanor
+People,Woman,Femme,Frau,Mujer,Donna,Женщина,امرأة,महिला,女人,女,여자,Mulher,Kadın,Mwanamke,زن,Wīf,Kona,Qinō,Femina,Γυνή,Zagri,Ellith
+People,Warrior,Guerrier,Krieger,Guerrero,Guerriero,Воин,محارب,योद्धा,战士,戦士,전사,Guerreiro,Savaşçı,Shujaa,جنگجو,Wiga,Hermaðr,Gadrauhts,Bellator,Πολεμιστής,Urukz,Maethor
+People,Savage,Sauvage,Wilder,Salvaje,Selvaggio,Дикарь,همجي,जंगली,野蛮人,野蛮人,야만인,Selvagem,Vahşi,Mkatili,وحشی,Wilde,Villr,Wilþeis,Barbarus,Βάρβαρος,Snagaz,Rhavan
+Concepts,Day,Jour,Tag,Día,Giorno,День,يوم,दिन,天,昼,낮,Dia,Gün,Siku,روز,Dæġ,Dagr,Dags,Dies,Ἡμέρα,Krazh,Auren
+Concepts,Night,Nuit,Nacht,Noche,Notte,Ночь,ليل,रात,夜,夜,밤,Noite,Gece,Usiku,شب,Niht,Nótt,Nahts,Nox,Νύξ,Ulgoth,Fuinen
+Concepts,Life,Vie,Leben,Vida,Vita,Жизнь,حياة,जीवन,生活,命,삶,Vida,Hayat,Maisha,زندگی,Līf,Líf,Libains,Vita,Βίος,Grishak,Cuilë
+Concepts,Death,Mort,Tod,Muerte,Morte,Смерть,موت,मृत्यु,死亡,死,죽음,Morte,Ölüm,Kifo,مرگ,Dēað,Dauði,Dauþus,Mors,Θάνατος,Durgoth,Gurthë
+Concepts,Birth,Naissance,Geburt,Nacimiento,Nascita,Рождение,ولادة,जन्म,出生,誕生,탄생,Nascimento,Doğum,Uzazi,تولد,Beorþ,Burðr,Gabaurþs,Natus,Γένεσις,Zogborn,Onnalë
+Concepts,Weapon,Arme,Waffe,Arma,Arma,Оружие,سلاح,हथियार,武器,武器,무기,Arma,Silah,Silaha,سلاح,Wǣpn,Vápn,Wepna,Telum,Ὅπλον,Skagun,Macilë
+Concepts,Sword,Épée,Schwert,Espada,Spada,Меч,سيف,तलवार,剑,剣,검,Espada,Kılıç,Upanga,شمشیر,Sweord,Sverð,Hairus,Gladius,Ξίφος,Kragûl,Langoth
+Concepts,Running,Courir,Laufen,Correr,Correre,Бег,جري,दौड़,跑步,走る,달리기,Correr,Koşma,Kukimbia,دویدن,Rynel,Rás,Rinnan,Currens,Τρέχων,Boltrun,Norien
+Concepts,Ride,Monter,Reiten,Montar,Cavalcare,Езда,ركوب,सवारी,骑,乗る,타기,Montar,Binmek,Kupanda,سواری,Rād,Reið,Ridan,Equitare,Ἱππεύω,Ghorash,Rochir
+Materials,Gold,Or,Gold,Oro,Oro,Золото,ذهب,सोना,金,金,금,Ouro,Altın,Dhahabu,طلا,Gold,Gull,Gulþ,Aurum,Χρυσός,Zoguld,Malathir
+Materials,Silver,Argent,Silber,Plata,Argento,Серебро,فضة,चांदी,银,銀,은,Prata,Gümüş,Fedha,نقره,Seolfor,Silfr,Silubr,Argentum,Ἄργυρος,Mithzog,Silveth
+Materials,Steel,Acier,Stahl,Acero,Acciaio,Сталь,فولاذ,इस्पात,钢,鋼,강철,Aço,Çelik,Chuma,فولاد,Stȳle,Stál,*Stals,Chalybs,Χάλυψ,Angzog,Angren
+Materials,Copper,Cuivre,Kupfer,Cobre,Rame,Медь,نحاس,तांबा,铜,銅,구리,Cobre,Bakır,Shaba,مس,Ār,Eir,Aiz,Cuprum,Χαλκός,Rukzog,Rossen
+Colors,Red,Rouge,Rot,Rojo,Rosso,Красный,أحمر,लाल,红色,赤,빨강,Vermelho,Kırmızı,Nyekundu,قرمز,Rēad,Rauðr,,Ruber,Ἐρυθρός,Rukash,Carnen
+Colors,Blue,Bleu,Blau,Azul,Blu,Синий,أزرق,नीला,蓝色,青,파랑,Azul,Mavi,Bluu,آبی,Blāw,Blár,,Caeruleus,Κυανός,Zulakh,Luinë
+Colors,Green,Vert,Grün,Verde,Verde,Зелёный,أخضر,हरा,绿色,緑,초록,Verde,Yeşil,Kijani,سبز,Grēne,Grœnn,,Viridis,Χλωρός,Gorzak,Laereth
+Colors,Black,Noir,Schwarz,Negro,Nero,Чёрный,أسود,काला,黑色,黒,검정,Preto,Siyah,Nyeusi,سیاه,Blæc,Svartr,,Niger,Μέλας,Nargash,Morilath
+Colors,White,Blanc,Weiß,Blanco,Bianco,Белый,أبيض,सफेद,白色,白,하양,Branco,Beyaz,Nyeupe,سفید,Hwīt,Hvítr,,Albus,Λευκός,Skarul,Nimriel
+Colors,Yellow,Jaune,Gelb,Amarillo,Giallo,Жёлтый,أصفر,पीला,黄色,黄,노랑,Amarelo,Sarı,Njano,زرد,Geolu,Gulr,,Flavus,Ξανθός,Ghulak,Maloren
+Colors,Purple,Violet,Lila,Morado,Viola,Фиолетовый,بنفسجي,बैंगनी,紫色,紫,보라,Roxo,Mor,Zambarau,بنفش,Purpur,Purpuri,,Purpureus,Πορφυρός,Vozgash,Lothren
+Colors,Brown,Marron,Braun,Marrón,Marrone,Коричневый,بني,भूरा,棕色,茶色,갈색,Marrom,Kahverengi,Kahawia,قهوه‌ای,Brūn,Brúnn,,Brunneus,Φαιός,Mugash,Baranor
+Colors,Gray,Gris,Grau,Gris,Grigio,Серый,رمادي,धूसर,灰色,灰色,회색,Cinza,Gri,Kijivu,خاکستری,Grǣg,Grár,,Canus,Γλαυκός,Ashzog,Mithren
+Colors,Orange,Orange,Orange,Naranja,Arancione,Оранжевый,برتقالي,नारंगी,橙色,オレンジ,주황,Laranja,Turuncu,Chungwa,نارنجی,,,,Aurantius,Πορτοκαλί,Flargash,Rilien
+Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,सीमा,边界,国境,국경,Fronteira,Sınır,Mpaka,مرز,Gemǣre,Landamæri,,Limes,Ὅριον,Kragath,Gondath
 `;
 
         let DATABASE = [];
