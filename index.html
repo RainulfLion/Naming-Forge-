@@ -262,6 +262,16 @@ Colors,Brown,Marron,Braun,Marrón,Marrone,Коричневый,بني,भूर�
 Colors,Gray,Gris,Grau,Gris,Grigio,Серый,رمادي,धूसर,灰色,灰色,회색,Cinza,Gri,Kijivu,خاکستری,Grǣg,Grár,,Canus,Γλαυκός,Ashzog,Mithren
 Colors,Orange,Orange,Orange,Naranja,Arancione,Оранжевый,برتقالي,नारंगी,橙色,オレンジ,주황,Laranja,Turuncu,Chungwa,نارنجی,,,,Aurantius,Πορτοκαλί,Flargash,Rilien
 Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,सीमा,边界,国境,국경,Fronteira,Sınır,Mpaka,مرز,Gemǣre,Landamæri,,Limes,Ὅριον,Kragath,Gondath
+Numbers,One,Un,Eins,Uno,Uno,Один,واحد,एक,一,一,하나,Um,Bir,Moja,یک,Ān,Einn,Ains,Unus,Εἷς,Kuzh,Aelë
+Numbers,Two,Deux,Zwei,Dos,Due,Два,اثنان,दो,二,二,둘,Dois,İki,Mbili,دو,Twēgen,Tveir,Twai,Duo,Δύο,Drokh,Liruen
+Numbers,Three,Trois,Drei,Tres,Tre,Три,ثلاثة,तीन,三,三,셋,Três,Üç,Tatu,سه,Þrīe,Þrír,Þreis,Tres,Τρεῖς,Ghrak,Selyth
+Numbers,Four,Quatre,Vier,Cuatro,Quattro,Четыре,أربعة,चार,四,四,넷,Quatro,Dört,Nne,چهار,Fēower,Fjórir,Fidwor,Quattuor,Τέσσαρες,Mozgul,Nelath
+Numbers,Five,Cinq,Fünf,Cinco,Cinque,Пять,خمسة,पाँच,五,五,다섯,Cinco,Beş,Tano,پنج,Fīf,Fimm,Fimf,Quinque,Πέντε,Urkhaz,Valuë
+Numbers,Six,Six,Sechs,Seis,Sei,Шесть,ستة,छह,六,六,여섯,Seis,Altı,Sita,شش,Siex,Sex,Saihs,Sex,Ἕξ,Skazh,Theriel
+Numbers,Seven,Sept,Sieben,Siete,Sette,Семь,سبعة,सात,七,七,일곱,Sete,Yedi,Saba,هفت,Seofon,Sjau,Sibun,Septem,Ἑπτά,Ghrulak,Siluen
+Numbers,Eight,Huit,Acht,Ocho,Otto,Восемь,ثمانية,आठ,八,八,여덟,Oito,Sekiz,Nane,هشت,Eahta,Átta,Ahtau,Octo,Ὀκτώ,Vokhan,Orinel
+Numbers,Nine,Neuf,Neun,Nueve,Nove,Девять,تسعة,नौ,九,九,아홉,Nove,Dokuz,Tisa,نه,Nigon,Níu,Niun,Novem,Ἐννέα,Zharduk,Faelwen
+Numbers,Ten,Dix,Zehn,Diez,Dieci,Десять,عشرة,दस,十,十,열,Dez,On,Kumi,ده,Tīen,Tíu,Taihun,Decem,Δέκα,Grakhor,Aerthil
 `;
 
         let DATABASE = [];
@@ -355,7 +365,10 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'فولاذ': 'Fuladh', 'نحاس': 'Nuhas', 'أحمر': 'Ahmar', 'أزرق': 'Azraq',
                 'أخضر': 'Akhdar', 'أسود': 'Aswad', 'أبيض': 'Abyad', 'أصفر': 'Asfar',
                 'بنفسجي': 'Banafsaji', 'بني': 'Bunni', 'رمادي': 'Ramadi', 'برتقالي': 'Burtuqali',
-                'حدود': 'Hudud'
+                'حدود': 'Hudud',
+                'واحد': 'Wahid', 'اثنان': 'Ithnan', 'ثلاثة': 'Thalatha', 'أربعة': 'Arbaa',
+                'خمسة': 'Khamsa', 'ستة': 'Sitta', 'سبعة': 'Sabaa', 'ثمانية': 'Thamaniya',
+                'تسعة': 'Tisaa', 'عشرة': 'Ashara'
             };
             if (wordMap[text]) return wordMap[text];
             const map = {
@@ -395,7 +408,9 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'فولاد': 'Fulad', 'مس': 'Mes', 'قرمز': 'Qermez', 'آبی': 'Abi',
                 'سبز': 'Sabz', 'سیاه': 'Siah', 'سفید': 'Sefid', 'زرد': 'Zard',
                 'بنفش': 'Banafsh', 'قهوه‌ای': 'Qahvei', 'خاکستری': 'Khakestari', 'نارنجی': 'Narenji',
-                'مرز': 'Marz'
+                'مرز': 'Marz',
+                'یک': 'Yek', 'دو': 'Do', 'سه': 'Se', 'چهار': 'Chahar', 'پنج': 'Panj',
+                'شش': 'Shesh', 'هفت': 'Haft', 'هشت': 'Hasht', 'نه': 'Noh', 'ده': 'Dah'
             };
             if (wordMap[text]) return wordMap[text];
             const map = {
@@ -436,7 +451,9 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 'इस्पात': 'Ispat', 'तांबा': 'Tamba', 'लाल': 'Lal', 'नीला': 'Neela',
                 'हरा': 'Hara', 'काला': 'Kala', 'सफेद': 'Safed', 'पीला': 'Peela',
                 'बैंगनी': 'Baingani', 'भूरा': 'Bhura', 'धूसर': 'Dhusar', 'नारंगी': 'Narangi',
-                'सीमा': 'Seema'
+                'सीमा': 'Seema',
+                'एक': 'Ek', 'दो': 'Do', 'तीन': 'Teen', 'चार': 'Char', 'पाँच': 'Paanch',
+                'छह': 'Chhah', 'सात': 'Saat', 'आठ': 'Aath', 'नौ': 'Nau', 'दस': 'Das'
             };
             if (wordMap[text]) return wordMap[text];
             const vowels = {
@@ -532,7 +549,9 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 '剑': 'Jian', '跑步': 'Paobu', '骑': 'Qi', '金': 'Jin', '银': 'Yin',
                 '钢': 'Gang', '铜': 'Tong', '红色': 'Hongse', '蓝色': 'Lanse', '绿色': 'Luse',
                 '黑色': 'Heise', '白色': 'Baise', '黄色': 'Huangse', '紫色': 'Zise',
-                '棕色': 'Zongse', '灰色': 'Huise', '橙色': 'Chengse', '边界': 'Bianjie'
+                '棕色': 'Zongse', '灰色': 'Huise', '橙色': 'Chengse', '边界': 'Bianjie',
+                '一': 'Yi', '二': 'Er', '三': 'San', '四': 'Si', '五': 'Wu',
+                '六': 'Liu', '七': 'Qi', '八': 'Ba', '九': 'Jiu', '十': 'Shi'
             };
             if (pinyinMap[text]) return pinyinMap[text];
             // Fallback: try longest-prefix greedy match for unknowns
@@ -577,7 +596,10 @@ Concepts,Border,Frontière,Grenze,Frontera,Confine,Граница,حدود,स�
                 '金': 'Kin', '銀': 'Gin', '鋼': 'Hagane', '銅': 'Dō',
                 // Colors + border (CSV gaps filled)
                 '赤': 'Aka', '青': 'Ao', '緑': 'Midori', '黒': 'Kuro', '白': 'Shiro',
-                '黄': 'Ki', '紫': 'Murasaki', '茶色': 'Chairo', '灰色': 'Haiiro', '国境': 'Kokkyō'
+                '黄': 'Ki', '紫': 'Murasaki', '茶色': 'Chairo', '灰色': 'Haiiro', '国境': 'Kokkyō',
+                // Cardinals 1–10 (kanji CSV rows)
+                '一': 'Ichi', '二': 'Ni', '三': 'San', '四': 'Shi', '五': 'Go',
+                '六': 'Roku', '七': 'Shichi', '八': 'Hachi', '九': 'Kyuu', '十': 'Juu'
             };
             if (kanjiMap[text]) return kanjiMap[text];
             const kanaMap = {
